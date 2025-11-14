@@ -1,5 +1,5 @@
 # ctb2strava
-Simple Python script that allows to create activities on Strava from a Climbing Tracker backup file.
+Simple Python script that allows to create activities on Strava from a [Climbing Tracker](https://play.google.com/store/apps/details?id=freudenmann.climbing_track&hl=en) backup file.
 
 ## How to get credentials from Strava
 
