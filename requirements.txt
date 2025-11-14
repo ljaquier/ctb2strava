@@ -1,0 +1,4 @@
+timezonefinder
+requests
+geopy
+git+https://github.com/ljaquier/gpx2strava.git
