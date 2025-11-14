@@ -9,7 +9,7 @@ Simple Python script that allows to create activities on Strava from a [Climbing
 2. Retrieve the `<client_id>` and `<client_secret>`
 
 3. Request and allow access from a browser\
-   `https://www.strava.com/oauth/authorize?client_id=client_id>&response_type=code&redirect_uri=http://localhost/exchange_token&scope=activity:write,read`
+   `https://www.strava.com/oauth/authorize?client_id=<client_id>&response_type=code&redirect_uri=http://localhost/exchange_token&scope=activity:write,read`
 
 4. Retrieve the `<authorization_code>` that is in the browser URL bar\
    `http://localhost/exchange_token?state=&code=<authorization_code>&scope=activity:write,read`
