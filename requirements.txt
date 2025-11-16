@@ -1,4 +1,3 @@
-timezonefinder
-requests
-geopy
-git+https://github.com/ljaquier/gpx2strava.git
+timezonefinder==8.1.0
+geopy==2.4.1
+gpx2strava @ git+https://github.com/ljaquier/gpx2strava.git@1.0.0

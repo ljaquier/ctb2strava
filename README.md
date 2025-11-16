@@ -39,4 +39,3 @@ As a Docker container:
 docker build -t ctb2strava .
 docker run -it --rm -v config.json:/usr/src/app/config.json -v ctb.json:/usr/src/app/ctb.json --name ctb2strava ctb2strava
 ```
-
