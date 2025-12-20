@@ -811,6 +811,38 @@ def get_best_route(routes, route_type, style_ids):
 def get_title(location):
     return f"🧗 {'Outdoor' if location['location_outdoor'] == 1 else 'Indoor'} climbing / {location['location_name']}"
 
+def get_best_route_line(routes, route_type, clean_style_ids = None, dirty_style_ids = None):
+    best_route_clean = get_best_route(routes, route_type, clean_style_ids)
+    best_route_dirty = None
+    if dirty_style_ids:
+        best_route_dirty = get_best_route(routes, route_type, dirty_style_ids)
+        if best_route_clean and best_route_dirty and best_route_dirty['grade_id'] <= best_route_clean['grade_id']:
+            best_route_dirty = None
+
+    line = ""
+    if best_route_clean or best_route_dirty:
+        line += " - "
+        line += {
+            'SPORT_CLIMBING': "Sport climbing [S]",
+            'BOULDER': "Bouldering [B]",
+            'SPEED_CLIMBING': "Speed climbing [SPEED]",
+            'MULTI_PITCH': "Multi-pitch climbing [MP]",
+            'TRAD_CLIMBING': "Trad climbing [T]",
+            'ICE_CLIMBING': "Ice climbing [ICE]",
+            'DEEP_WATER_SOLO': "Deep water soloing [DWS]",
+            'FREE_SOLO': "Free soloing [FREE]"
+        }[route_type]
+        line += ":"
+
+        if best_route_clean:
+            line += f" {get_route_grade_name(best_route_clean)}"
+        if best_route_dirty:
+            line += f" ({get_route_grade_name(best_route_dirty)})"
+
+        line += "\n"
+
+    return line
+
 def get_description(session, routes):
     # Only comment if no route
     if not routes:
@@ -825,39 +857,14 @@ def get_description(session, routes):
 
     # Best ascent
     description += f"Best ascent: \n"
-
-    best_sport_climbing_route = get_best_route(routes, 'SPORT_CLIMBING', [1, 2, 3, 10])
-    if best_sport_climbing_route:
-        description += f" - Sport climbing [S]: {get_route_grade_name(best_sport_climbing_route)}\n"
-
-    best_boulder_route = get_best_route(routes, 'BOULDER', [100, 101, 103])
-    if best_boulder_route:
-        description += f" - Bouldering [B]: {get_route_grade_name(best_boulder_route)}\n"
-
-    best_speed_climbing_route = get_best_route(routes, 'SPEED_CLIMBING', None)
-    if best_speed_climbing_route:
-        description += f" - Speed climbing [SPEED]: {best_speed_climbing_route['speed_time']/1000:.2f} s\n"
-
-    best_multi_pitch_route = get_best_route(routes, 'MULTI_PITCH', [1, 2, 3, 10])
-    if best_multi_pitch_route:
-        description += f" - Multi-pitch climbing [MP]: {get_route_grade_name(best_multi_pitch_route)}\n"
-
-    best_trad_climbing_route = get_best_route(routes, 'TRAD_CLIMBING', [1, 2, 3, 10])
-    if best_trad_climbing_route:
-        description += f" - Trad climbing [T]: {get_route_grade_name(best_trad_climbing_route)}\n"
-
-    best_ice_climbing_route = get_best_route(routes, 'ICE_CLIMBING', [1, 2, 3, 10])
-    if best_ice_climbing_route:
-        description += f" - Ice climbing [ICE]: {get_route_grade_name(best_ice_climbing_route)}\n"
-
-    best_deep_water_solo_route = get_best_route(routes, 'DEEP_WATER_SOLO', [1, 2, 3, 10])
-    if best_deep_water_solo_route:
-        description += f" - Deep water soloing [DWS]: {get_route_grade_name(best_deep_water_solo_route)}\n"
-
-    best_free_solo_route = get_best_route(routes, 'FREE_SOLO', [1, 2, 3, 10])
-    if best_free_solo_route:
-        description += f" - Free soloing [FREE]: {get_route_grade_name(best_free_solo_route)}\n"
-
+    description += get_best_route_line(routes, 'SPORT_CLIMBING', [1, 2, 3, 10], [4, 5, 9])
+    description += get_best_route_line(routes, 'BOULDER', [100, 101, 103])
+    description += get_best_route_line(routes, 'SPEED_CLIMBING')
+    description += get_best_route_line(routes, 'MULTI_PITCH', [1, 2, 3, 10], [4, 5, 9])
+    description += get_best_route_line(routes, 'TRAD_CLIMBING', [1, 2, 3, 10], [4, 5, 9])
+    description += get_best_route_line(routes, 'ICE_CLIMBING', [1, 2, 3, 10], [4, 5, 9])
+    description += get_best_route_line(routes, 'DEEP_WATER_SOLO', [1, 2, 3, 10], [4, 5, 9])
+    description += get_best_route_line(routes, 'FREE_SOLO', [1, 2, 3, 10], [4, 5, 9])
     description += "\n"
 
     # Comment
