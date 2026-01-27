@@ -802,6 +802,14 @@ def get_route_type_name(route):
 
     raise Exception()
 
+def get_route_height(route):
+    coefficient = {
+        6: 0.75,
+        7: 0.5,
+        8: 0.25,
+    }.get(route['style_id'], 1)
+    return round(route['ascend_height']*coefficient)
+
 def get_best_route(routes, route_type, style_ids):
     if route_type == 'SPEED_CLIMBING':
         return min(filter(lambda y: y['route_type'] == route_type, routes), key=lambda x: x['speed_time'], default=None)
@@ -851,9 +859,9 @@ def get_description(session, routes):
     # Main
     description = f"Total ascents: {len(routes):02d}\n"
 
-    climbed_height = sum(map(lambda x: x['ascend_height'], routes))
-    if climbed_height > 0.0:
-        description += f"Climbed height: {f'{climbed_height:.0f} m'}\n"
+    climbed_height = sum(map(get_route_height, routes))
+    if climbed_height > 0:
+        description += f"Climbed height: {f'{climbed_height} m'}\n"
 
     # Best ascent
     description += f"Best ascent: \n"
@@ -877,8 +885,9 @@ def get_description(session, routes):
         description += f"{route_number:02d}"
         if route['route_name']:
             description += f" | {route['route_name']}"
-        if route['ascend_height'] > 0.0:
-            description += f" | {route['ascend_height']:.0f} m"
+        route_height = get_route_height(route)
+        if route_height > 0:
+            description += f" | {route_height} m"
         description += "\n"
 
         description += get_route_grade_name(route)
@@ -939,7 +948,7 @@ def get_gpx(session):
     track_points = []
 
     for route in routes:
-        current_time = up_and_down_circle(track_points, location['latitude'], location['longitude'], current_time, time_end, elevation, route['ascend_height'])
+        current_time = up_and_down_circle(track_points, location['latitude'], location['longitude'], current_time, time_end, elevation, get_route_height(route))
 
     while current_time:
         current_time = circle(track_points, location['latitude'], location['longitude'], current_time, time_end, elevation)

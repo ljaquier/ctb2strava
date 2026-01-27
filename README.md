@@ -30,7 +30,7 @@ Simple Python script that allows to create activities on Strava from a [Climbing
 ## Usage
 As a script:
 ```bash
-pip3 install -r requirements.txt -t lib
+python3.14 -m pip install --upgrade -r requirements.txt -t lib
 PYTHONPATH=./lib python3 ctb2strava.py config.json ctb.json
 ```
 
